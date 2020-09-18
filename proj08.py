@@ -1,11 +1,16 @@
-''' Your header goes here '''
+# -*- coding: utf-8 -*-
+''' ###############################################################################
+#                                                                             # 
+#This assignment focuses on the usagae of dictionaries,lists and tuples to 
+derive datat from the files and it also tests the knowlege about.csv reader. 
+It is based on videogames. '''
 
 import csv
-# import pylab
+import pylab
 from operator import itemgetter
-import collections
 
-def open_file():
+
+def open_file():    #open file function using the utf 8 encode
     while True:
         filename = input("Enter filename: ")
         try:
@@ -14,26 +19,28 @@ def open_file():
             break;
         except FileNotFoundError:
             print("File not found! Please try again!")
-            open_file()
 
-pass
+
 
 
 def read_file(fp):
+    '''This function takes into account the file pointer and then
+    returns the three dictionaries that are required for processing the
+    file further.'''
     c = csv.reader(fp)
     i = 0
     D1 = {}
     D2 = {}
     D3 = {}
     for line in c:
-        i = i + 1
-        if i > 1:
-            name = line[0].lower().strip()
-            platform = line[1]
+        i = i + 1   
+        if i > 1:   # creating a false statement
+            name = line[0].lower().strip()  #according to instructions.
+            platform = line[1].lower().strip()
             try:
                 year = int(line[2])
                 na_sales = float(line[5]) * 1000000
-                europe_sales = float(line[6]) * 1000000
+                europe_sales = float(line[6]) * 1000000 # according to need
                 japan_sales = float(line[7]) * 1000000
                 other_sales = float(line[8]) * 1000000
             except:
@@ -57,57 +64,27 @@ def read_file(fp):
                 D3[publisher] = [tup3]
             else:
                 D3[publisher].append(tup3)
+    Z2 = {}
+    Z3 = {}
+    Z1 = {}
 
-    D4 = {}
-    D5 = {}
-    D6 = {}
-    D7 = {}
-    D8 = {}
-    D9 = {}
 
-    for key in sorted(D1.keys()):
-        D4[key] = D1[key]
 
-    for key in D4:
-        l1 = []
-        for val in D4[key]:
-            l1.append(val)
-        l1.sort(reverse=True)
-        D5[key] = l1
+    for key in sorted(D1):      # sorting values according to the requirment
+        Z1[ key ] = sorted(D1[ key ], key=itemgetter(5),reverse=True)
+    for key in sorted(D2):
+        Z2[ key ] = sorted(D2[ key ], key=itemgetter(6),reverse=True)
+    for key in sorted(D3):
+        Z3[ key ] = sorted(D3[ key ], key=itemgetter(7),reverse=True)
 
-    # print(D5)
-
-    for key in sorted(D2.keys()):
-        D6[key] = D2[key]
-
-    for key in D6:
-        l1 = []
-        for val in D6[key]:
-            l1.append(val)
-        l1.sort(reverse=True)
-        D7[key] = l1
-
-    # print(D7)
-
-    for key in sorted(D3.keys()):
-        D8[key] = D3[key]
-
-    for key in D8:
-        l1 = []
-        for val in D8[key]:
-            l1.append(val)
-        l1.sort(reverse=True)
-        D9[key] = l1
-
-    # print(D9)
-
-    return D5,D7,D9
-
-pass
+    return Z1,Z2,Z3
 
 
 def get_data_by_column(D1, indicator, c_value):
-
+    '''This function goes t through the dictionary D1 and analyzes the data
+    inferred and returns the value of the global value sales in the form of 
+    tuples.'''
+    
     if not c_value or c_value == '':
         return []
 
@@ -117,47 +94,73 @@ def get_data_by_column(D1, indicator, c_value):
             # l1 = []
             for val in D1[key]:
                 if val[2] == int(c_value):
-                    l1.append(val)
+                    l1.append(val) # appending the values
 
-        l2 = sorted(l1, key=lambda x: int(x[5]), reverse=True)
-        l3 = sorted(l2, key=lambda x: int(x[1]))
-        # print(l3)
-        return l3
+        l2 = sorted(l1, key=itemgetter(5), reverse=True)
+        l3 = sorted(l2, key=itemgetter(1))
+        #print(l3)
+        return l3#returning the values
 
     if indicator == 'platform':
         for key in D1:
             # l1 = []
             for val in D1[key]:
-                if val[1] == int(c_value):
+                if val[1] == c_value:
                     l1.append(val)
-        l2 = sorted(l1, key=lambda x: int(x[5]), reverse=True)
-        l3 = sorted(l2, key=lambda x: int(x[2]))
-    return l3
+        l2 = sorted(l1, key=itemgetter(5), reverse=True)
+        l3 = sorted(l2, key=itemgetter(2))
+   # print(l3)
+    return l3 # return appropriate values.
 
 
 
 def get_publisher_data(D3, publisher):
+    '''This function shall go through d3 and get the values we need in this 
+    function it happens to be list of tuples'''
     l1 = []
-    for key in D3:
+    for key in D3:  #using dictionary to ectract key from d3
         # l1 = []
         for val in D3[key]:
             if val[0] == publisher:
                 l1.append(val)
-
+    l1.sort(key=itemgetter(1))
+    l1.sort(key=itemgetter(7),reverse=True)
     return l1
 
 
+
+
 def display_global_sales_data(L, indicator):
+    
+    
+    c = 0
 
-    # if indicator == 'year':
-    #     for e in L:
-    #         if e[2] ==
 
+    if indicator=='year':
+        print("{:30s}{:10s}{:20s}{:30s}{:12s}".format('Name', 'Platform', 'Genre', 'Publisher', 'Global Sales'))
+        for v in L:
+            c += v[5]
+            n=v[0][0:25]    #slicing the values according to hintsd
+            p=v[1]
+            g=v[3][0:15]
+            pu=v[4][0:25]
 
-    header1 = ['Name', 'Platform', 'Genre', 'Publisher', 'Global Sales']
-    header2 = ['Name', 'Year', 'Genre', 'Publisher', 'Global Sales']
+            print("{:30s}{:10s}{:20s}{:30s}{:<12,.02f}".format(n,p,g,pu,v[5]))
 
-    pass
+        print('\n')
+        print("{:90s}{:<12,.02f}".format('Total Sales',c))
+    else:
+        print("{:30s}{:10s}{:20s}{:30s}{:12s}".format('Name', 'Year', 'Genre', 'Publisher', 'Global Sales'))
+        for v in L:
+            c += v[5]
+            n=v[0][0:25]# sorting according to the slicing
+            g=v[3][0:25]
+            pu=v[4][0:25]
+
+            print("{:30s}{:<10}{:20s}{:30s}{:<12,.02f}".format(n,v[2], g, pu,v[5]))
+
+        print('\n')
+        print("{:90s}{:<12,.02f}".format('Total Sales', c))
 
 
 def get_genre_data(D2, year):
@@ -165,66 +168,117 @@ def get_genre_data(D2, year):
     for k in D2.keys():
         for e in D2[k]:
             if e[1] == year:
-                if not e[1] in D:
+                if not e[0] in D:
 
                     tup = (e[0], 1, e[2],e[3],e[4],e[5],e[6])
-                    D[e[0]] = {tup}
+                    D[e[0]] = tup
 
                 else:
                     tup = D[e[0]]
-                    tup = (tup[0], tup[1] + 1, tup[2] + e[2], tup[3] + e[3] + tup[4] + e[4] + tup[5] + e[5] + tup[6] + e[6])
+                    tup = (tup[0], int(tup[1]) + 1, tup[2] + e[2], tup[3] + e[3] ,tup[4] + e[4] , tup[5] + e[5] , tup[6] + e[6])
                     D[e[0]] = tup
+    l1=[]
+    for k in D.values():
+        l1.append(k)
+    l1.sort()  # sorting according to the genre
+    l1.sort(key=itemgetter(-1), reverse=True)
+    return l1
 
-    # print(D);
-    return D
 
-    pass
 
 
 def display_genre_data(genre_list):
+    '''
+    This function prints a table and evaluates data from of all data based on genre
+    '''
+    header=('Genre', 'North America', 'Europe', 'Japan', 'Other', 'Global')
+    e = 0
+    print("{:15s}{:15s}{:15s}{:15s}{:15s}{:15s}".format(header[0],header[1],header[2],header[3],header[4],header[5]))
 
-
-    header = ['Genre', 'North America', 'Europe', 'Japan', 'Other', 'Global']
-    print(header)
-    for e in genre_list:
-        print(e[0], e[2],e[3],e[4],e[5],e[6])
-
-    pass
-
+    for v in genre_list:
+            genre = v[0][0:15]
+            na = v[2]
+            eur = v[3]
+            jpn = v[4]
+            other = v[5]
+            glob = v[6]
+            e += v[6]
+            print("{:30s}{:<15,.02f}{:<15,.02f}{:<15,.02f}{:<15,.02f}{:<15,.02f}".format(\
+                  genre, na, eur, jpn, other, glob))
+    print("\n{:90s}{:<15,.02f}".format('Total Sales', e))
 
 def display_publisher_data(pub_list):
     '''
-        WRITE DOCSTRING HERE!
-    '''
-    pub = pub_list[0][0]
-    header = ['Title', 'North America', 'Europe', 'Japan', 'Other', 'Global']
+        This table gives us a data of all regional sales per year based on the genre   '''
 
-    pass
+    header=('Title', 'North America', 'Europe', 'Japan', 'Other', 'Global')
+    e = 0
+    print("{:30s}{:15s}{:15s}{:15s}{:15s}{:15s}".format(header[0],header[1],header[2],header[3],header[4],header[5]))
+
+    for v in pub_list:
+        title = v[1][0:25]#slicing the appropriate values.
+        na = v[3]
+        eur = v[4]
+        jpn = v[5]
+        other = v[6]
+        glob = v[7]
+        e += v[7]
+        print("{:30s}{:<15,.02f}{:<15,.02f}{:<15,.02f}{:<15,.02f}{:<15,.02f}".format(title, na, eur, jpn, other, glob))
+
+    #printing the values according to the rquired format
+    
+    print("\n{:90s}{:<15,.02f}".format("Total Sales", e))
+
 
 
 def get_totals(L, indicator):
-    l1 =[]
+    '''This function has to taake the list from data_ column and then by
+    by processing we get a list of tuples and the indicator '''
+
+
+    l1 =[]      # creating empty values.
     l2 = []
+    dict1={}
     if indicator == 'year':
         for e in L:
-            l1.append(e[1])
-            l2.append(e[5])
-            return l1,l2
+            if e[1] not in dict1:
+                dict1[e[1]]=e[5]
+            else:
+                dict1[e[1]]+=e[5]
+        l1 = sorted(dict1)
+        for k in l1:
+            l2.append(dict1[k])
+        return l1, l2
     elif indicator == 'platform':
-        for e in L:
-            l1.append(e[2])
-            l2.append(e[5])
-            return l1,l2
-
+        for year in L:
+            if year[2] not in dict1:
+                dict1[year[2]] = year[5]
+            else:
+                dict1[year[2]] += year[5]
+        l1 = sorted(dict1)
+        for k in l1:
+            l2.append(dict1[k])
+        return l1, l2
 
 def prepare_pie(genres_list):
-    l1=[]
-    l2=[]
-    for e in genres_list:
-        l1.append(genres_list[0])
-        l2.append(genres_list[6])
+    '''
+     This function take slist adn genres_list from a function and then returns
+     new lists based on the genre and global sale   
+    '''
+    L = []
+    for genre in genres_list:
+        L.append((genre[0], genre[6]))
 
-    return l1,l2
+    L.sort(key = itemgetter(1), reverse = True)
+    # appending values to list
+    List_A = []
+    List_B = []
+    for v in L:
+        List_A.append(v[0])
+        List_B.append(v[1])
+
+    return List_A , List_B
+
 
 
 def plot_global_sales(x, y, indicator, value):
@@ -239,18 +293,17 @@ def plot_global_sales(x, y, indicator, value):
 
         Returns: None
     '''
+    if indicator == 'year':
+        pylab.title("Video Game Global Sales in {}".format(value))
+        pylab.xlabel("Platform")
+    elif indicator == 'platform':
+        pylab.title("Video Game Global Sales for {}".format(value))
+        pylab.xlabel("Year")
 
-    # if indicator == 'year':
-    #     pylab.title("Video Game Global Sales in {}".format(value))
-    #     pylab.xlabel("Platform")
-    # elif indicator == 'platform':
-    #     pylab.title("Video Game Global Sales for {}".format(value))
-    #     pylab.xlabel("Year")
-    #
-    # pylab.ylabel("Total copies sold (millions)")
-    #
-    # pylab.bar(x, y)
-    # pylab.show()
+    pylab.ylabel("Total copies sold (millions)")
+
+    pylab.bar(x, y)
+    pylab.show()
 
 
 def plot_genre_pie(genre, values, year):
@@ -265,129 +318,152 @@ def plot_genre_pie(genre, values, year):
         Returns: None
     '''
 
-    # pylab.pie(values, labels=genre, autopct='%1.1f%%')
-    # pylab.title("Video Games Sales per Genre in {}".format(year))
-    # pylab.show()
+    pylab.pie(values, labels=genre, autopct='%1.1f%%')
+    pylab.title("Video Games Sales per Genre in {}".format(year))
+    pylab.show()
 
 
 def main():
+    ''' This function makes use of all the other functions. '''
+    
+    fp = open_file()
+    D1, D2, D3 = read_file(fp)
     # Menu options for the program
     MENU = '''Menu options
-
+    
     1) View data by year
     2) View data by platform
     3) View yearly regional sales by genre
     4) View sales by publisher
     5) Quit
-
+    
     Enter choice: '''
+    start = ''
+    
+    while start != '5':
+        
+        #continue the loop till option is not eqyual to 5
+        
+        choice = input(MENU)
+        
+        #Option 1: Display all platforms for a single year
+        if choice=="1": 
 
-    fp = open_file()
-    (D1, D2, D3) = read_file(fp)
-
-    choice = input(MENU)
-    # print(choice)
-    # if choice == '1':
-    #     print("c 1")
-    #     fp = open_file()
-    #     (D1, D2, D3) = read_file(fp)
-    #     l1 = get_data_by_column(D1, 'year', 1980)
-    #     print("l1 is : ")
-    #     print(l1)
-
-    while choice != '5':
-
-        # Option 1: Display all platforms for a single year
-        if choice == '1':
             try:
-                year = input('Enter year: ')
-                if not isinstance(int(year), int):
-                    raise ValueError
-                print(get_data_by_column(D1, 'year', year))
-                get_genre_data(D2, 1980)
-                p = input('Do you want to plot (y/n)? ')
-                if p == 'y':
-                    plot_global_sales()
-                else:
-                    choice = input(MENU)
-                # if the list of platforms for a single year is empty, show an error message
 
-            except ValueError:
+               year=input("Enter year: ") 
+
+                #if the list of platforms for a single year is empty, show an error message    
+
+               data=get_data_by_column(D1,'year',int(year))
+               if len(data)==0:
+                   print("The selected year was not found in the data.")
+
+               elif True:
+                   print("\n{:^80s}".format("Video Game Sales in {}".format(year)))
+                   
+                   display_global_sales_data(data,'year')
+                   
+                   plot=input("Do you want to plot (y/n)? ")
+                   
+                   if plot=="y":
+                       x,y = get_totals(data, "year")
+                       plot_global_sales(x,y,"year", year)
+            except TypeError:
                 print("Invalid year.")
-
-        if choice == '2':
+                    
+        #Option 2: Display all year for a single platform
+        elif choice == '2':
             try:
-                platform = input('Enter platform: ')
-                if isinstance(platform, int):
-                    raise ValueError
-                print(get_data_by_column(D1, 'platform', platform))
-                p = input('Do you want to plot (y/n)? ')
-                if p == 'y':
-                    l = get_totals()
-                    plot_global_sales()
-                else:
-                    choice = input(MENU)
-                # if the list of platforms for a single year is empty, show an error message
-                pass
-
+                global_sales_input = str(input("Enter platform: ")) # setting basics
+                getdata = get_data_by_column(D1, 'platform', global_sales_input)
+                if len(getdata) == 0:
+                    print("The selected platform was not found in the data.")
+                elif True:
+                    print("\n{:^80s}".format("Video Game Sales for {}".format(global_sales_input)))
+                    
+                    display_global_sales_data(getdata, 'platform')
+                    plot_input = input("Do you want to plot (y/n)? ")
+                    if plot_input == 'y':
+                        #incase user opts y
+                        getdata1 , getdata2 = get_totals(getdata, 'platform')
+                        plot_global_sales(getdata1, getdata2, 'platform', global_sales_input)
+                    else:
+                        continue    
             except ValueError:
-                print("Invalid plaform.")
-
-        if choice == '3':
+                    print("Invalid platform.")
+                    
+        #Option 3: Display the regional sales for all video game genres
+        elif choice == '3':
             try:
-                year = input('Enter year: ')
-                if not isinstance(int(year), int):
-                    raise ValueError
-                print(get_genre_data(D2, year))
-                p = input('Do you want to plot (y/n)? ')
-                if p == 'y':
-                    plot_genre_pie()
-                # if the list of platforms for a single year is empty, show an error message
-                else:
-                    choice = input(MENU)
-
+                genre_s = int(input("Enter year: ")) 
+                
+                genre_l = get_genre_data(D2, genre_s)
+                
+                if len(genre_l) ==0 :
+                    print("The selected year was not found in the data.")
+                elif True:
+                    
+                    print("\nRegional Video Games Sales per Genre")
+                    display_genre_data(genre_l)
+                    plot_input = input("Do you want to plot (y/n)? ")
+                    if plot_input == 'y':
+                        alpha , beta = prepare_pie(genre_l)
+                        plot_genre_pie(alpha, beta, genre_s)
+                    else:
+                        continue  
+            
             except ValueError:
-                print("Invalid year.")
-
-        if choice == '4':
-            try:
-                year = input('Enter year: ')
-                if not isinstance(year, int):
-                    raise ValueError
-                print(get_data_by_column(D1, 'year', year))
-                p = input('Do you want to plot (y/n)? ')
-                if p == 'y':
-                    plot_global_sales()
-                # if the list of platforms for a single year is empty, show an error message
-                else:
-                    choice = input(MENU)
-
-            except ValueError:
-                print("Invalid year.")
-
-            # Option 4: Display publisher data
-
+                    print("Invalid year")
+                    
+        #Option 4: Display publisher data
+        elif choice == '4':
             # Enter keyword for the publisher name
-
+            pub = input("Enter keyword for publisher: ")
+            
             # search all publisher with the keyword
-            # match = []
-            #
-            # # print the number of matches found with the keywords
-            # if len(match) > 1:
-            #     print("There are {} publisher(s) with the requested keyword!".format(len(match)))
-            #     for i, t in enumerate(match):
-            #         print("{:<4d}{}".format(i, t[0]))
-            #
-            #     # PROMPT USER FOR INDEX
-            #
-            # else:
-            #     index = 0
-
-
-
-    print("\nThanks for using the program!")
-    print("I'll leave you with this: \"All your base are belong to us!\"")
-
-
-if __name__ == "__main__":
+            empty = []
+            index_list = []
+            for k, v in D3.items(): # enemurating the values
+                if pub in k:
+                    
+                    empty.append(D3[k]) # according to pdf
+            if len(empty) > 0:    
+                print("There are {} publisher(s) with the requested keyword!".format(len(empty)))
+                
+                
+                for alpha,beta in enumerate(empty):
+                    
+                    index_list.append((alpha,beta [0][0]))#appending the required alpha and beta
+                    
+                    
+                    print("{:<4d}{}".format(alpha, beta[0][0]))
+               
+                index = int(input("Select the index for the publisher to use: "))
+                
+                for value in index_list:
+                    if index == value[0]:
+                        publisher_name = value[1]
+                        pub_list = get_publisher_data(D3, publisher_name)
+                        
+                        print("\nVideo Games Sales for {}".format(publisher_name))
+                        
+                        display_publisher_data(pub_list)
+                
+            
+            else:
+                print('No publisher name containing "{}" was found!'.format(pub))
+                continue
+                
+#        
+        elif choice == '5':
+            print("\nThanks for using the program!")
+            print("I'll leave you with this: \"All your base are belong to us!\"")
+            break           #to reloop the values
+        
+        else:
+            print("Invalid option. Please Try Again!")
+        
+if __name__ == "__main__":      # running the main function.
     main()
+
